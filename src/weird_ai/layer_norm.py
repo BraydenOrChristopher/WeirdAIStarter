@@ -9,7 +9,7 @@ class LayerNorm(nn.Module):
         self.shift = nn.Parameter(torch.zeros(emb_dim))
 
     def forward(self, x):
-
+        
         # TODO
         # Compute mean
         # Compute variance

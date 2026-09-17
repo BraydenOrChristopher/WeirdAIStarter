@@ -12,8 +12,13 @@ class LayerNorm(nn.Module):
         
         # TODO
         # Compute mean
-        # Compute variance
-        # Normalize
-        # Apply scale and shift
+        mean = x.mean(dim=-1, keepdim=True)
 
-        raise NotImplementedError()
+        # Compute variance
+        variance = x.var(dim=-1, keepdim=True, unbiased=False)
+        
+        # Normalize
+        normalized_x = (x - mean) / torch.sqrt(variance + 1e-10)
+        
+        # Apply scale and shift
+        return self.scale * normalized_x + self.shift

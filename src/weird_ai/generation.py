@@ -25,7 +25,10 @@ def text_to_token_ids(text, tokenizer):
     # 2. Convert the encoded list into a torch tensor.
     # 3. Add a batch dimension using unsqueeze(0).
 
-    raise NotImplementedError("Implement text_to_token_ids.")
+    encoded = tokenizer.encode(text)
+    encoded_tensor = torch.tensor(encoded)
+    encoded_tensor = encoded_tensor.unsqueeze(0)
+    return encoded_tensor
 
 
 def token_ids_to_text(token_ids, tokenizer):
@@ -45,7 +48,9 @@ def token_ids_to_text(token_ids, tokenizer):
     # 2. Convert the tensor to a Python list.
     # 3. Use the tokenizer to decode the list.
 
-    raise NotImplementedError("Implement token_ids_to_text.")
+    flat = token_ids.squeeze(0)
+    token_list = flat.tolist()
+    return tokenizer.decode(token_list)
 
 
 def generate_text_simple(model, input_ids, max_new_tokens, context_size):
@@ -70,8 +75,19 @@ def generate_text_simple(model, input_ids, max_new_tokens, context_size):
     # 4. Use argmax to choose the most likely next token.
     # 5. Append that token to input_ids.
 
-    raise NotImplementedError("Implement generate_text_simple.")
+    for _ in range(max_new_tokens):
+        idx_cond = input_ids[:, -context_size:]
 
+        with torch.no_grad():
+            logits = model(idx_cond)
+
+        logits = logits[:, -1, :]
+
+        idx_next = torch.argmax(logits, dim=1, keepdim=True)
+
+        input_ids = torch.cat((input_ids, idx_next), dim=1)
+
+    return input_ids
 
 def generate_and_print_sample(model, tokenizer, device, start_context, context_size, max_new_tokens=50):
     """
@@ -98,4 +114,8 @@ def generate_and_print_sample(model, tokenizer, device, start_context, context_s
     # 4. Convert generated token IDs back to text.
     # 5. Print the generated text.
 
-    raise NotImplementedError("Implement generate_and_print_sample.")
+    encoded = text_to_token_ids(start_context, tokenizer).to(device)
+    with torch.no_grad():
+        token_ids = generate_text_simple(model, encoded, max_new_tokens, context_size)
+    decoded_text = token_ids_to_text(token_ids, tokenizer)
+    print(decoded_text)

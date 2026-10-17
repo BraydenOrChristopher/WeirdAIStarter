@@ -32,7 +32,14 @@ def build_reasoning_prompt(user_prompt):
     # 3. Include the original user_prompt.
     # 4. Include a clear "Final Answer:" section.
 
-    raise NotImplementedError("Implement build_reasoning_prompt.")
+    return (
+        "You are Weird AI.\n\n"
+        "Think step-by-step.\n\n"
+        f"Task: {user_prompt}\n\n"
+        "Reasoning:\n"
+        "Work through the task one step at a time.\n\n"
+        "Final Answer:"
+    )
 
 
 def build_parody_reasoning_prompt(topic):
@@ -60,7 +67,17 @@ def build_parody_reasoning_prompt(topic):
     #    - Write the final parody lyrics.
     # 4. A clear "Final Parody:" section.
 
-    raise NotImplementedError("Implement build_parody_reasoning_prompt.")
+    return (
+        "You are Weird AI, a parody lyric assistant.\n\n"
+        "Think step-by-step.\n\n"
+        f"Topic: {topic}\n\n"
+        "Steps:\n"
+        "1. Identify the topic.\n"
+        "2. Identify funny ideas or exaggerations about the topic.\n"
+        "3. Identify possible rhymes.\n"
+        "4. Write the final parody lyrics.\n\n"
+        "Final Parody:"
+    )
 
 
 def build_closed_world_prompt(premises, question):
@@ -84,7 +101,15 @@ def build_closed_world_prompt(premises, question):
     # 3. Include the question.
     # 4. Include a "Reasoning:" section and an "Answer:" section.
 
-    raise NotImplementedError("Implement build_closed_world_prompt.")
+    premise_text = "\n".join(f"- {premise}" for premise in premises)
+    return (
+        "Use only the provided premises to answer the question. "
+        "Do not use outside knowledge.\n\n"
+        f"Premises:\n{premise_text}\n\n"
+        f"Question: {question}\n\n"
+        "Reasoning:\n\n"
+        "Answer:"
+    )
 
 
 def build_open_world_prompt(premises, question):
@@ -110,6 +135,12 @@ def build_open_world_prompt(premises, question):
     # 4. Include the question.
     # 5. Include a "Reasoning:" section and an "Answer:" section.
 
-    raise NotImplementedError("Implement build_open_world_prompt.")
-
-
+    premise_text = "\n".join(f"- {premise}" for premise in premises)
+    return (
+        "You may use relevant background knowledge in addition to the premises. "
+        "Check whether any premise has a conflict or contradiction with known facts, "
+        f"Premises:\n{premise_text}\n\n"
+        f"Question: {question}\n\n"
+        "Reasoning:\n\n"
+        "Answer:"
+    )
